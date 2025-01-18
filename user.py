@@ -2,7 +2,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 """
 users:
-  - "john_doe": {
+     "john_doe": {
       "password": "hashed_password",
       "balance": 100.0,
       "transactions": [
