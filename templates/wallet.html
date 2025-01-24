@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wallet</title>
+</head>
+<body>
+    <h1>Welcome, {{ user.username }}</h1>
+    <h2>Wallet Balance: {{ user.wallet_balance }}</h2>
+
+    <h3>Last 10 Transactions:</h3>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Amount</th>
+                <th>Description</th>
+                <th>Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for transaction in transactions %}
+                <tr>
+                    <td>{{ transaction.amount }}</td>
+                    <td>{{ transaction.description }}</td>
+                    <td>{{ transaction.created_at }}</td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="3">No transactions found.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h3>Recharge Wallet:</h3>
+    <form id="recharge-form">
+        <input type="number" name="amount" placeholder="Amount" min="1" required>
+        <button type="submit">Recharge</button>
+    </form>
+
+    <script>
+        document.getElementById('recharge-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const amount = e.target.amount.value;
+            
+            const response = await fetch('/api/recharge/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: JSON.stringify({ amount: amount })
+            });
+
+            const data = await response.json();
+            if (data.payment_url) {
+                window.location.href = data.payment_url;
+            } else {
+                alert('Recharge failed: ' + data.error);
+            }
+        });
+    </script>
+</body>
+</html>
