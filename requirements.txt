@@ -1,0 +1,6 @@
+Django
+mysqlclient
+redis
+djangorestframework
+drf-yasg
+zarinpal
